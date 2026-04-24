@@ -54,67 +54,79 @@
 // endmodule
 
 `default_nettype none
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
+/*
+ * tb.v — Tiny Tapeout Testbench Wrapper
+ * Happy Birthday Detector
+ *
+ * Fixed for GL simulation:
+ *  - Timeout extended to cover all 7 tests (3 × 10 000-cycle windows
+ *    plus reset/mid-reset overhead ≈ 350 000 cycles × 100 ns = 35 ms)
+ *  - Outputs initialised to 0 before reset so cocotb sees defined values
+ *    as soon as possible
+ *  - $dumpvars depth set to 0 (full hierarchy) for complete FST capture
+ */
+module tb ();
 
-module tb;
+  // ── Waveform dump ─────────────────────────────────────
+  initial begin
+    $dumpfile("tb.fst");
+    $dumpvars(0, tb);   // depth=0 → dump full hierarchy
+    #1;
+  end
 
-    reg clk = 0;
-    reg rst_n = 0;
-    reg ena = 1;
+  // ── Timeout: enough for all 7 tests ───────────────────
+  // Worst case: 3 wait_valid calls × 12 000 cycles × 100 ns
+  //           + test_06 500-cycle run + reset + margin
+  // = ~40 000 000 ns = 40 ms  →  use 50 ms to be safe
+  initial begin
+    #50_000_000;
+    $display("TIMEOUT: simulation exceeded 50 ms");
+    $finish;
+  end
 
-    reg  [7:0] ui_in  = 8'hFF;
-    reg  [7:0] uio_in = 8'h00;
+  // ── Standard TT signals ───────────────────────────────
+  reg        clk;
+  reg        rst_n;
+  reg        ena;
+  reg  [7:0] ui_in;
+  reg  [7:0] uio_in;
+  wire [7:0] uo_out;
+  wire [7:0] uio_out;
+  wire [7:0] uio_oe;
 
-    wire [7:0] uo_out;
-    wire [7:0] uio_out;
-    wire [7:0] uio_oe;
+  // ── Initialise all driven signals to known values ─────
+  // This prevents X-propagation into cocotb before do_reset() runs.
+  initial begin
+    clk     = 0;
+    rst_n   = 0;
+    ena     = 1;
+    ui_in   = 8'b0000_0001;   // tx_ena_n HIGH (TX off) during init
+    uio_in  = 8'b0000_0000;
+  end
 
-    // DUT
-    tt_um_happy_birthday dut (
-        .clk(clk),
-        .rst_n(rst_n),
-        .ena(ena),        // ⭐ REQUIRED
-        .ui_in(ui_in),
-        .uio_in(uio_in),
-        .uo_out(uo_out),
-        .uio_out(uio_out),
-        .uio_oe(uio_oe)
-    );
+  // ── 10 kHz clock (period = 100 µs = 100 000 ns) ──────
+  always #50_000 clk = ~clk;
 
-    // Clock
-    always #5 clk = ~clk;
+`ifdef GL_TEST
+  wire VPWR = 1'b1;
+  wire VGND = 1'b0;
+`endif
 
-    initial begin
-        // --------------------------
-        // STEP 1: Stable inputs
-        // --------------------------
-        ui_in  = 8'hFF;
-        uio_in = 8'h00;
-
-        // --------------------------
-        // STEP 2: Long reset (IMPORTANT)
-        // --------------------------
-        rst_n = 0;
-        repeat (20) @(posedge clk);   // longer reset
-
-        rst_n = 1;
-
-        // --------------------------
-        // STEP 3: Wait for stabilization
-        // --------------------------
-        repeat (20) @(posedge clk);
-
-        // --------------------------
-        // STEP 4: Enable TX
-        // --------------------------
-        ui_in[0] = 0;   // active LOW enable
-
-        // --------------------------
-        // STEP 5: Run long enough
-        // --------------------------
-        repeat (2000) @(posedge clk);
-
-        $finish;
-    end
+  // ── DUT ───────────────────────────────────────────────
+  tt_um_happy_birthday user_project (
+`ifdef GL_TEST
+      .VPWR   (VPWR),
+      .VGND   (VGND),
+`endif
+      .ui_in  (ui_in),    // [0]=tx_ena_n
+      .uo_out (uo_out),   // [6:0]=units 7-seg, [7]=valid
+      .uio_in (uio_in),   // unused
+      .uio_out(uio_out),  // [6:0]=tens 7-seg
+      .uio_oe (uio_oe),   // direction control
+      .ena    (ena),
+      .clk    (clk),
+      .rst_n  (rst_n)
+  );
 
 endmodule
