@@ -1,76 +1,32 @@
-# # Tiny Tapeout project information
-# project:
-#   title:        ""      # Project title
-#   author:       ""      # Your name
-#   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-#   description:  ""      # One line description of what your project does
-#   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-#   clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
-
-#   # How many tiles your design occupies? A single tile is about 167x108 uM.
-#   tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
-
-#   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-#   top_module:  "tt_um_example"
-
-#   # List your project's source files here.
-#   # Source files must be in ./src and you must list each source file separately, one per line.
-#   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
-#   source_files:
-#     - "project.v"
-
-# # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
-# # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
-# pinout:
-#   # Inputs
-#   ui[0]: ""
-#   ui[1]: ""
-#   ui[2]: ""
-#   ui[3]: ""
-#   ui[4]: ""
-#   ui[5]: ""
-#   ui[6]: ""
-#   ui[7]: ""
-
-#   # Outputs
-#   uo[0]: ""
-#   uo[1]: ""
-#   uo[2]: ""
-#   uo[3]: ""
-#   uo[4]: ""
-#   uo[5]: ""
-#   uo[6]: ""
-#   uo[7]: ""
-
-#   # Bidirectional pins
-#   uio[0]: ""
-#   uio[1]: ""
-#   uio[2]: ""
-#   uio[3]: ""
-#   uio[4]: ""
-#   uio[5]: ""
-#   uio[6]: ""
-#   uio[7]: ""
-
-# # Do not change!
-# yaml_version: 6
+# Tiny Tapeout project information
 project:
-  title:        "Birthday Pattern Detector"
-  author:       "Ganesh"
-  discord:      ""
-  description:  "Detects a 9-bit birthday pattern in serial input and counts occurrences"
-  language:     "Verilog"
-  clock_hz:     100000
+  title:       "Happy Birthday Detector"
+  author:      "Mandala Ganesh"                       
+  discord:     ""                               # Your Discord username (optional)
+  description: "Transmits a serial bit stream and detects a 9-bit birthday pattern (March 7), counting and displaying hits per second on a 7-segment display"
+  language:    "Verilog"
+  clock_hz:    10000                            # 10 kHz system clock
 
+  # 1x1 tile is sufficient for this design
   tiles: "1x1"
 
-  top_module:  "tt_um_ganesh_birthday_detector"
+  # Top module name — must start with tt_um_
+  top_module: "tt_um_happy_birthday"
 
+  # All source files in ./src (list each separately)
   source_files:
     - "project.v"
+    - "tx_generator.v"
+    - "tx_serializer.v"
+    - "rx_detector.v"
+    - "hit_counter.v"
+    - "seg7_driver.v"
 
+# ── Pin Descriptions ──────────────────────────────────────
+# Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
-  ui[0]: "Serial Input"
+  # Inputs
+  ui[0]: "TX_ENA_N - Active-low transmit enable (0 = transmitting)"
   ui[1]: ""
   ui[2]: ""
   ui[3]: ""
@@ -79,22 +35,25 @@ pinout:
   ui[6]: ""
   ui[7]: ""
 
-  uo[0]: "Match Output"
-  uo[1]: "Count Bit 0"
-  uo[2]: "Count Bit 1"
-  uo[3]: "Count Bit 2"
-  uo[4]: "Count Bit 3"
-  uo[5]: "Count Bit 4"
-  uo[6]: "Count Bit 5"
-  uo[7]: "Count Bit 6"
+  # Outputs — units digit of hit count (7-segment, active low)
+  uo[0]: "SEG_A (units digit)"
+  uo[1]: "SEG_B (units digit)"
+  uo[2]: "SEG_C (units digit)"
+  uo[3]: "SEG_D (units digit)"
+  uo[4]: "SEG_E (units digit)"
+  uo[5]: "SEG_F (units digit)"
+  uo[6]: "SEG_G (units digit)"
+  uo[7]: "HIT_COUNT_VALID - Pulses high each second with new count"
 
-  uio[0]: ""
-  uio[1]: ""
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
-  uio[5]: ""
-  uio[6]: ""
+  # Bidirectional — tens digit of hit count (7-segment, active low)
+  uio[0]: "SEG_A (tens digit)"
+  uio[1]: "SEG_B (tens digit)"
+  uio[2]: "SEG_C (tens digit)"
+  uio[3]: "SEG_D (tens digit)"
+  uio[4]: "SEG_E (tens digit)"
+  uio[5]: "SEG_F (tens digit)"
+  uio[6]: "SEG_G (tens digit)"
   uio[7]: ""
 
+# Do not change!
 yaml_version: 6
