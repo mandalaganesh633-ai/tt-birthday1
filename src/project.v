@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Student
+ * Copyright (c) 2024 Ganesh
  * SPDX-License-Identifier: Apache-2.0
  *
  * Happy Birthday Detector — Tiny Tapeout Single File
