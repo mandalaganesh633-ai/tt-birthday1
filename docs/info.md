@@ -1,5 +1,24 @@
+# Happy Birthday Detector
 
+## How it works
+This project detects a 9-bit birthday pattern (March 7) from a serial input stream.
 
+It uses:
+- A transmitter (tx_generator) to generate serial data
+- A finite state machine (FSM) to detect the pattern
+- A counter to count matches
+
+When the pattern is detected, the output signal goes HIGH and the counter increments.
+
+## How to test
+1. Apply clock and reset signals.
+2. Provide a serial input stream.
+3. Insert the target pattern into the stream.
+4. Observe the output:
+   - Output goes HIGH when pattern is detected
+   - Counter increments for each detection
+
+You can verify using simulation tools like GTKWave.
 ## How it works
 
 This project implements a **Happy Birthday Detector** — a digital system that transmits a
@@ -107,4 +126,4 @@ how the 9-bit pattern aligns across frame boundaries.
 | 6     | `0000010`      |
 | 7     | `1111000`      |
 | 8     | `0000000`      |
-| 9     | `0010000`      |
+| 9     | `0010000`      | 
