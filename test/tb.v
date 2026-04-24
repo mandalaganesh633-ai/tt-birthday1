@@ -5,22 +5,20 @@
  * tb.v — Tiny Tapeout Testbench Wrapper
  * Happy Birthday Detector
  *
- * This file wires up the tt_um_happy_birthday module so that
- * the cocotb test.py can drive and observe all signals.
- *
- * Dump format: FST (view with GTKWave or Surfer)
+ * Wires up tt_um_happy_birthday so cocotb test.py can
+ * drive and observe all signals.
  */
 
 module tb ();
 
-  // ── Waveform dump ───────────────────────────────────────
+  // ── Waveform dump ─────────────────────────────────────
   initial begin
     $dumpfile("tb.fst");
     $dumpvars(0, tb);
     #1;
   end
 
-  // ── Standard Tiny Tapeout signals ───────────────────────
+  // ── Standard TT signals ───────────────────────────────
   reg        clk;
   reg        rst_n;
   reg        ena;
@@ -35,11 +33,7 @@ module tb ();
   wire VGND = 1'b0;
 `endif
 
-  // ── Convenience aliases (for readable test.py access) ───
-  // uo_out[6:0] = units 7-seg | uo_out[7] = hit_count_valid
-  // uio_out[6:0] = tens 7-seg | uio_oe shows output direction
-
-  // ── DUT instantiation ───────────────────────────────────
+  // ── DUT ───────────────────────────────────────────────
   tt_um_happy_birthday user_project (
 
 `ifdef GL_TEST
@@ -47,10 +41,10 @@ module tb ();
       .VGND   (VGND),
 `endif
 
-      .ui_in  (ui_in),    // [0]=tx_ena_n, [7:1]=unused
-      .uo_out (uo_out),   // [6:0]=units seg, [7]=valid
+      .ui_in  (ui_in),    // [0]=tx_ena_n
+      .uo_out (uo_out),   // [6:0]=units 7-seg, [7]=valid
       .uio_in (uio_in),   // unused
-      .uio_out(uio_out),  // [6:0]=tens seg
+      .uio_out(uio_out),  // [6:0]=tens 7-seg
       .uio_oe (uio_oe),   // direction control
       .ena    (ena),
       .clk    (clk),
