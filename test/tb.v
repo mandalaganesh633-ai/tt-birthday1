@@ -53,7 +53,6 @@
 
 // endmodule
 
-
 `default_nettype none
 `timescale 1ns/1ps
 
@@ -63,8 +62,8 @@ module tb;
     reg rst_n = 0;
     reg ena = 1;
 
-    reg  [7:0] ui_in;
-    reg  [7:0] uio_in;
+    reg  [7:0] ui_in  = 8'hFF;
+    reg  [7:0] uio_in = 8'h00;
 
     wire [7:0] uo_out;
     wire [7:0] uio_out;
@@ -74,7 +73,7 @@ module tb;
     tt_um_happy_birthday dut (
         .clk(clk),
         .rst_n(rst_n),
-        .ena(ena),          // ⭐ VERY IMPORTANT
+        .ena(ena),        // ⭐ REQUIRED
         .ui_in(ui_in),
         .uio_in(uio_in),
         .uo_out(uo_out),
@@ -86,21 +85,34 @@ module tb;
     always #5 clk = ~clk;
 
     initial begin
-        // Initialize
+        // --------------------------
+        // STEP 1: Stable inputs
+        // --------------------------
         ui_in  = 8'hFF;
         uio_in = 8'h00;
 
-        // Reset
+        // --------------------------
+        // STEP 2: Long reset (IMPORTANT)
+        // --------------------------
         rst_n = 0;
-        repeat (5) @(posedge clk);
+        repeat (20) @(posedge clk);   // longer reset
 
         rst_n = 1;
 
-        // Enable TX (active LOW)
-        ui_in[0] = 0;
+        // --------------------------
+        // STEP 3: Wait for stabilization
+        // --------------------------
+        repeat (20) @(posedge clk);
 
-        // Run simulation
-        repeat (500) @(posedge clk);
+        // --------------------------
+        // STEP 4: Enable TX
+        // --------------------------
+        ui_in[0] = 0;   // active LOW enable
+
+        // --------------------------
+        // STEP 5: Run long enough
+        // --------------------------
+        repeat (2000) @(posedge clk);
 
         $finish;
     end
