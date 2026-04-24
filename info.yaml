@@ -1,7 +1,7 @@
 # Tiny Tapeout project information
 project:
   title:       "Happy Birthday Detector"
-  author:      "Mandala Ganesh"                       
+  author:      "Mandala Ganesh"                        # Replace with your name
   discord:     ""                               # Your Discord username (optional)
   description: "Transmits a serial bit stream and detects a 9-bit birthday pattern (March 7), counting and displaying hits per second on a 7-segment display"
   language:    "Verilog"
@@ -13,20 +13,14 @@ project:
   # Top module name — must start with tt_um_
   top_module: "tt_um_happy_birthday"
 
-  # All source files in ./src (list each separately)
+  # ALL modules are merged into one project.v file
   source_files:
     - "project.v"
-    - "tx_generator.v"
-    - "tx_serializer.v"
-    - "rx_detector.v"
-    - "hit_counter.v"
-    - "seg7_driver.v"
 
 # ── Pin Descriptions ──────────────────────────────────────
-# Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
   # Inputs
-  ui[0]: "TX_ENA_N - Active-low transmit enable (0 = transmitting)"
+  ui[0]: "TX_ENA_N - Active-low transmit enable (0=transmitting)"
   ui[1]: ""
   ui[2]: ""
   ui[3]: ""
@@ -36,23 +30,23 @@ pinout:
   ui[7]: ""
 
   # Outputs — units digit of hit count (7-segment, active low)
-  uo[0]: "SEG_A (units digit)"
-  uo[1]: "SEG_B (units digit)"
-  uo[2]: "SEG_C (units digit)"
-  uo[3]: "SEG_D (units digit)"
-  uo[4]: "SEG_E (units digit)"
-  uo[5]: "SEG_F (units digit)"
-  uo[6]: "SEG_G (units digit)"
-  uo[7]: "HIT_COUNT_VALID - Pulses high each second with new count"
+  uo[0]: "SEG_A units digit"
+  uo[1]: "SEG_B units digit"
+  uo[2]: "SEG_C units digit"
+  uo[3]: "SEG_D units digit"
+  uo[4]: "SEG_E units digit"
+  uo[5]: "SEG_F units digit"
+  uo[6]: "SEG_G units digit"
+  uo[7]: "HIT_COUNT_VALID - pulses high each second with new count"
 
   # Bidirectional — tens digit of hit count (7-segment, active low)
-  uio[0]: "SEG_A (tens digit)"
-  uio[1]: "SEG_B (tens digit)"
-  uio[2]: "SEG_C (tens digit)"
-  uio[3]: "SEG_D (tens digit)"
-  uio[4]: "SEG_E (tens digit)"
-  uio[5]: "SEG_F (tens digit)"
-  uio[6]: "SEG_G (tens digit)"
+  uio[0]: "SEG_A tens digit"
+  uio[1]: "SEG_B tens digit"
+  uio[2]: "SEG_C tens digit"
+  uio[3]: "SEG_D tens digit"
+  uio[4]: "SEG_E tens digit"
+  uio[5]: "SEG_F tens digit"
+  uio[6]: "SEG_G tens digit"
   uio[7]: ""
 
 # Do not change!
