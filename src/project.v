@@ -174,8 +174,12 @@ module seg7_driver (
     output reg  [6:0]  o_seg_tens,
     output reg  [6:0]  o_seg_units
 );
-    /*wire [3:0] tens  = i_count / 10;
-    wire [3:0] units = i_count % 10; */
+    /* verilator lint_off WIDTHTRUNC */
+    wire [3:0] tens  = i_count / 10;
+    wire [3:0] units = i_count % 10;
+    /* verilator lint_on WIDTHTRUNC */
+   // wire [3:0] tens  = i_count / 10;
+    // wire [3:0] units = i_count % 10; 
 
     function [6:0] encode;
         input [3:0] digit;
