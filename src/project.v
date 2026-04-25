@@ -233,12 +233,6 @@ module tt_um_happy_birthday (
     wire [6:0] w_seg_tens;
     wire [6:0] w_seg_units;
 
-    //- wire for the avoid the warning 
-
-    /* verilator lint_off WIDTHTRUNC */
-wire [3:0] tens  = i_count / 10;
-wire [3:0] units = i_count % 10;
-/* verilator lint_on WIDTHTRUNC */
 
     // ── Module instantiations ─────────────────────────────
     tx_generator gen (
