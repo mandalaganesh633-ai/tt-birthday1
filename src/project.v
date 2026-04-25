@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Ganesh
+ * Copyright (c) 2024 Mandala Ganesh
  * SPDX-License-Identifier: Apache-2.0
  *
  * Happy Birthday Detector — Tiny Tapeout Single File
@@ -174,8 +174,8 @@ module seg7_driver (
     output reg  [6:0]  o_seg_tens,
     output reg  [6:0]  o_seg_units
 );
-    wire [3:0] tens  = i_count / 10;
-    wire [3:0] units = i_count % 10;
+    /*wire [3:0] tens  = i_count / 10;
+    wire [3:0] units = i_count % 10; */
 
     function [6:0] encode;
         input [3:0] digit;
